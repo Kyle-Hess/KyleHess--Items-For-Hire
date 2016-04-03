@@ -1,4 +1,6 @@
-MENU = "\nMenu:\n(L)ist all items\n(H)ire an item\n (R)eturn an item\n (A)dd new item\n(Q)uit"
+import csv
+
+MENU = "\nMenu:\n(L)ist all items\n(H)ire an item\n(R)eturn an item\n(A)dd new item\n(Q)uit"
 
 def main():
     print("item for hire by Kyle Hess")
@@ -10,7 +12,7 @@ def main():
     while choice != "Q":
 
         if choice == "L":
-            print(file.readlines())
+            loading_items()
         elif choice == "H":
             print("Hire an Item")
         elif choice == "R":
@@ -24,4 +26,19 @@ def main():
 
     print("Thank you for using Items for hire ")
     file.close()
+
+########
+
+def loading_items():
+    items = open("items.csv", "r")
+    for line in items.readlines():
+        print("! ", line.strip())
+    items.close()
+
+
+#######
+def hiring_item():
+    return
+
+
 main()
