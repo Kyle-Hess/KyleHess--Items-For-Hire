@@ -5,6 +5,7 @@ mylist = []
 
 # Fuction Main runs the menu and writes the lits back to file when user quits
 def main():
+
     print("item for hire by Kyle Hess")
     load_items()
     print(MENU)
@@ -37,13 +38,15 @@ def main():
 #Loads the contents of the csv file
 def load_items():
     items = open("items.csv", "r")
+    counter = 0
     for line in items:
         match = line.strip().split(",")
         name = match[0]
         description = match[1]
         price = match[2]
         hire = match[3]
-        mylist.append((match[0], match[1], match[2], match[3]))
+        mylist.append((counter, match[0], match[1], match[2], match[3],))
+        counter += 1
     items.close()
 
 
@@ -52,23 +55,25 @@ def load_items():
 def listing_items():
     print("* Indicates item is NOT in stock.")
     for thing in mylist:
-        if thing[3] == 'out':
+        if thing[4] == 'out':
             print(thing,'*')
         else:
             print(thing)
 
 #######
+##Works with the enumerate version, and no counter in load_items.
 #Hires an item thats in and then changes it to out
 def hiring_item():
+
     hire = str(input("Enter the Item you want to hire: "))
-    for i, item_name in enumerate(mylist):
-        if item_name[0] == hire:
-            temp = list(mylist[i])
-            temp[3] = "out"
-            mylist[i] = tuple(temp)
+
+    for item_name in mylist[0]:
+        if item_name[0][0] == hire:
+            temp = list(mylist)
+            temp[4] = "out"
+            mylist = tuple(temp)
     for thing in mylist:
         print(thing[0:])
-
 
 #####
 #Returns an item and changes the 'out' to 'in'
