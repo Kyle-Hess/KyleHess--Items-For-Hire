@@ -3,7 +3,7 @@ import csv
 MENU = "\nMenu:\n(L)ist all items\n(H)ire an item\n(R)eturn an item\n(A)dd new item\n(Q)uit"
 mylist = []
 
-
+# Fuction Main runs the menu and writes the lits back to file when user quits
 def main():
     print("item for hire by Kyle Hess")
     load_items()
@@ -27,13 +27,14 @@ def main():
         choice = input("Enter Choice: ").upper()
 
     print("Thank you for using Items for hire ")
-    with open("items.csv", "a") as csvfile:
-        wr = csv.writer(csvfile, dialect='excel')
-        wr.write(mylist)
+    with open("items.csv", "w", newline='') as csvfile:
+        csv_out = csv.writer(csvfile, dialect='excel')
+        for row in mylist:
+            csv_out.writerow(row)
 
 
 ########
-
+#Loads the contents of the csv file
 def load_items():
     items = open("items.csv", "r")
     for line in items:
@@ -47,14 +48,17 @@ def load_items():
 
 
 ######
-
+#Lists the items avaliable for hire
 def listing_items():
+    print("* Indicates item is NOT in stock.")
     for thing in mylist:
-        if len(thing[3]) != 3:
-            print(thing[0:])
-
+        if thing[3] == 'out':
+            print(thing,'*')
+        else:
+            print(thing)
 
 #######
+#Hires an item thats in and then changes it to out
 def hiring_item():
     hire = str(input("Enter the Item you want to hire: "))
     for i, item_name in enumerate(mylist):
@@ -67,6 +71,7 @@ def hiring_item():
 
 
 #####
+#Returns an item and changes the 'out' to 'in'
 def return_item():
     hire = str(input("Enter the Item you want to Return: "))
     for i, item_name in enumerate(mylist):
@@ -79,6 +84,7 @@ def return_item():
 
 
 #####
+#Adds a new item to the bottom of a list
 def add_item():
     itemName = input("name of item: ")
     description = input("enter description: ")
