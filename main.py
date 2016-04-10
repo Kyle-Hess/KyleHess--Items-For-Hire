@@ -1,12 +1,15 @@
 import csv
 
+# Github link:https://github.com/Kyle-Hess/KyleHess--Items-For-Hire
+
+# Menu Constant
 MENU = "\nMenu:\n(L)ist all items\n(H)ire an item\n(R)eturn an item\n(A)dd new item\n(Q)uit"
-mylist = []
+itemsList = []
 
 
-# Fuction Main runs the menu and writes the list back to file when user quits
+# Function Main runs the menu and writes the list back to file when user quits
 def main():
-    print("Items for hire by Kyle Hess")
+    print("Items for hire - by Kyle Hess")
     load_items()
     with open("items.csv") as f:
         print(len(f.readlines()), "Items loaded from items.csv")
@@ -28,15 +31,13 @@ def main():
         choice = input("Enter Choice: ").upper()
 
     print("Thank you for using Items for hire ")
-    # tuple(mylist)
-    # print(mylist)
     with open("items.csv", "w", newline='') as csvfile:
         csv_out = csv.writer(csvfile, dialect='excel')
-        for row in mylist:
+        for row in itemsList:
             csv_out.writerow(row)
 
 
-########
+######
 # Loads the contents of the csv file
 def load_items():
     items = open("items.csv", "r")
@@ -47,62 +48,98 @@ def load_items():
         description = match[1]
         price = match[2]
         hire = match[3]
-        mylist.append([match[0], match[1], '$', match[3], match[4]])
+        itemsList.append([match[0], match[1], match[2], match[3]])
         # mylist.append([counter, '=', match[0],'$' match[1], match[2], match[3]])
         # counter += 1
-
     items.close()
 
 
 ######
-# Lists the items avaliable for hire
+# Lists the items in the itemsList, and shows the * symbol for items out of stock.
 def listing_items():
     print("* Indicates item is NOT in stock.")
-    for is_star in mylist:
-        if is_star[4] == 'out':
-            print(*is_star, '*', sep=', ')
+    for is_star in itemsList:
+        if is_star[3] == 'out':
+            print('{} ({}) = ${} {}{}'.format(*is_star, "*"))
         else:
-            print(*is_star, sep=', ')
+            print('{} ({}) = ${}'.format(*is_star))
 
 
-#######
-##Works with the enumerate version, and no counter in load_items.
-# Hires an item that is in and then changes it to 'out'.
+######
+# Works with the enumerate version, and no counter in load_items.
+# Hires an item that is in, and then changes it to 'out'.
 # For it to work user has to enter Full name of item.
 def hiring_item():
+    for hired_items in itemsList:
+        if hired_items[3] == 'in':
+            print('{}: {} ({}) = ${}'.format("Available for hire", *hired_items))
+
     hire = str(input("Enter the Item you want to hire: "))
-    for i, item_name in enumerate(mylist):
+    for i, item_name in enumerate(itemsList):
         if item_name[0] == hire:
-            temp = list(mylist[i])
-            temp[4] = "out"
-            mylist[i] = tuple(temp)
-    for items in mylist:
-        print(', '.join(items[0:]))
+            temp = list(itemsList[i])
+            temp[3] = "out"
+            itemsList[i] = tuple(temp)
+    if hire == '':
+        print("Nothing was hired")
+    else:
+        print('{} | {} '.format(hire, "Has been hired"))
 
 
-#####
+######
 # Returns an item and changes the 'out' to 'in'
+# Again have to enter full name of item.
+# If no input is entered returns to menu.
 def return_item():
+    for return_items in itemsList:
+        if return_items[3] == 'out':
+            print('{}: {} ({}) = ${}'.format("Out Items", *return_items))
+
     returning = str(input("Enter the Item you want to Return: "))
-    for i, item_name in enumerate(mylist):
+    for i, item_name in enumerate(itemsList):
         if item_name[0] == returning:
-            temp = list(mylist[i])
-            temp[4] = "in"
-            mylist[i] = tuple(temp)
-    for items in mylist:
-        print(', '.join(items[0:]))
+            temp = list(itemsList[i])
+            temp[3] = "in"
+            itemsList[i] = tuple(temp)
+    if returning == '':
+        print("Nothing was returned")
+    else:
+        print('{} | {} '.format(returning, "Has now returned"))
 
 
-#####
+######
 # Adds a new item to the bottom of a list
 def add_item():
-    itemName = input("Item Name: ")
-    description = input("Description: ")
-    price = input("Price per day: $")
+    while True:
+        itemName = input("Item Name: ")
+        if itemName == '':
+            print("Input can not be blank.")
+        else:
+            break
+    print()
 
-    mylist.append([itemName, description, price, 'in'])
+    while True:
+        description = input("Description: ")
+        if description == '':
+            print("Input can not be blank.")
+        else:
+            break
+    print()
+
+    while True:
+        try:
+            price = int(input("Price per day: $"))
+        except ValueError:
+            print("Invalid input; enter valid number")
+            continue
+        if price < 0:
+            print("Price must be >= $0")
+            continue
+        else:
+            break
+
+    itemsList.append([itemName, description, price, 'in'])
     print('{} ({}), ${} - {}'.format(itemName, description, price, "now available for hire."))
-    #print(', '.join(mylist))
 
 
 main()
